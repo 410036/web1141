@@ -29,7 +29,7 @@
             background-size: 60px 40px;
             position: absolute;
         }
-        .bullt {
+        .bullet {
             width: 4px;
             height: 6px;
             background-color: red;
@@ -40,27 +40,6 @@
 
     </style>
     <script>
-         function ship_move() {
-            if(ship.posX > 0 && dir["ArrowLeft"]) {
-                ship.posX--;
-            } else if(ship.posX + ship.w < spaces.w && dir["ArrowRight"]) {
-                ship.posX++;
-            }
-            ship.style.left=ship.posX+"px";
-         }
-         function ufo_move(ufo) {
-            if(ufo.posY + ufo.h > spaces.h) {
-                clearInterval(ufo.move);
-                ufo.remove();
-                return;
-            }
-            ufo.posX++;
-
-
-         }
-
-
-
         function game_init() {
             dir={"ArrowLeft":0,"ArrowRight":0, "ArrowDown":0, "ArrowUp":0}
             spaces={w:800,h:800};
@@ -69,45 +48,83 @@
             ship.h=60;
             ship.posX=(spaces.w-ship.w)/2;
             ship.posY=spaces.h-ship.h;
-
             ship.style.top=ship.posY+"px";
             ship.style.left=ship.posX+"px";
             ship.move=setInterval(ship_move,5);
-
+            game_score=0;
+            game_tumer=setInterval(function(){
+                game_tume++;
+                document.getElementById("game_tume").innerHTML=game_tume;
+            },1000);
+            Array.from(document.getElementsByClassName("ufo")).forEach
             game_t1=setInterval(ufo_create,1000);
         }
 
+        function game_over() {
+            game_starting=false;
+            clearInterval(ufo_creater);
+            clearInterval(game_timer);
+            document.getElementById("spaces").staly.animationPlayState="paused";
+            Array.from(document.getElementsByClassName("ufo")).forEach((u)=>{
+                clearInterval(u.move);
+            });
+            Array.from(document.getElementsByClassName("bullet")).forEach((b)=>{
+                clearInterval(b.move);
+                b.remove();
+            });
+            document.getElementById("restart").staly.display="black";
 
+            if(sessionStorage.length<=0) {
+                data=[];
+                data.push({"name":prompt("請輸入你的名稱:"),"score":game_score,"time":game_time});
+                sessionStorage.setItem("ranking",)
+            }
+
+        }
+
+        function ship_move() {
+            if(ship.posX > 0 && dir["ArrowLeft"]) {
+                ship.posX--;
+            } else if(ship.posX + ship.w < spaces.w && dir["ArrowRight"]) {
+                ship.posX++;
+            }
+            ship.style.left=ship.posX+"px";
+         }
+
+         function ufo_move(ufo) {
+            if(ufo.posY + ufo.h > spaces.h) {
+                clearInterval(ufo.move);
+                ufo.remove();
+                return;
+            }
+            ufo.posY++;
+            ufo.posX +=getRand(-2,2);
+            if(ufo.posX+ufo.w>spaces.w) {
+                ufo.posX=spaces.w-ufo.w;
+            }
+            ufo.style.left=ufo.posX+"px";
+            ufo.style.top=ufo.posY+"px";
+         }
 
          function mykeydown() {
             event.preventDefault();
-            if(event,key == " ") {
+            if(event.key == " ") {
                 shoot();
-            }else if(Array.from(Object.keys(dir))) {
+            }else if(Object.keys(dir).includes(event.key)) {
                 dir[event.key]=1;
             }
-            
-
          }
-
-
 
           function mykeyup() {
             event.preventDefault();
-            dir[event.key]=0;
+            if(Object.keys(dir).includes(event.key)) {
+                dir[event.key]=0;
+            } 
          }
-
-
 
          function getRand(min,max) {
-            return Math.floor(Math.rendom() * (min,max+1) + min);
+            return Math.floor(Math.random() * (max-min+1)) + min;
          }
-
-
-
-
-
-
 
          function ufo_create() {
             var u=document.createElement("img");
@@ -122,18 +139,31 @@
             u.style.top=u.posY+"px"
             u.move=setInterval(ufo_move,20,u);
 
-
          }
-
-
 
          function bullet_move(bt) {
             if(bt.posY < 0) {
-                clearInterval
+                clearInterval(bt.moye);
+                bt.remove();
+                return;
             }
+            bt.posY--;
+            bt.style.top=bt.posY+"px";
 
+            var hit_ufo = Array.from(document.getElementsByClassName("ufo")).filter((u)=>{
+                return (u.posX<= bt.posX) &&(u.posX+u.w >= bt.posX + bt.w) && (u.posY+u.h >= bt.posY + bt.h)
+            });
+            if(hit_ufo.length > 0 ) {
+                hit_ufo.forEach((u)=>{
+                    clearInterval(u.move);
+                    u.remove();
+                });
+                clearInterval(bt.move);
+                bt.remove();
+                game_score++;
+                document.getElementById("score").innerHTML=game_score;
+            }
          }
-
 
          function shoot() {
             var b=document.createElement("div");
@@ -145,17 +175,21 @@
             document.getElementById("spaces").appendChild(b);
             b.style.left=b.posX+"px";
             b.style.top=b.posY+"px";
+            b.move=setInterval(bullet_move,10,b);
 
          }
-
-
 
     </script>
 </head>
 <body onload="game_init()" onkeydown="mykeydown()" onkeyup="mykeyup()">
+    <div id="status">
+        <span>得分:<span id="score">0</span>分</span>
+        <span>得分:<span id="score">0</span>分</span>
+
+    </div>
     <div id="spaces">
         <div id="ship"></div>
         
     </div>
-</body>
+  
 </html>
