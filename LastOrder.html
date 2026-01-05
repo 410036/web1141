@@ -2,13 +2,127 @@
 <head>
     <title></title>
     <style>
+        #sky {
+            width: 800px;
+            height: 800px;
+            background: linear-gradient(rgb(124, 0, 114), rgb(186, 13, 255),rgb(180, 160, 255) );
+            position: relative;
+        }
+        #I {
+            width: 40px;
+            height: 60px;
+            background: red;
+            position: absolute;
+            top: 740px;
+            left: 380px;
+        }
+        .b {
+            width: 5px;
+            height: 5px;
+            background-color: #fff;
+            border-radius: 50%;
+            position: absolute;
+        }
 
     </style>
     <script>
-        
+        var sky, I, dir, game_timer, b_creater;
+        var skyW = 800, skyH = 800;
+
+        function game_init() {
+            dir = {"ArrowLeft":0,"ArrowRight":0, "ArrowDown":0, "ArrowUp":0};
+            
+            sky = document.getElementById("sky");
+            I = document.getElementById("I");
+            
+            // 初始化 I 的屬性
+            I.w = 40;
+            I.h = 60;
+            I.posX = (skyW - I.w) / 2;
+            I.posY = skyH - I.h;
+            
+            // 設定初始位置
+            I.style.top = I.posY + "px";
+            I.style.left = I.posX + "px";
+
+            // 啟動移動計時器
+            if(I.move) clearInterval(I.move);
+            I.move = setInterval(I_move, 10); // 10ms 執行一次
+
+            // 其他初始化
+            console.log("遊戲初始化完成，當前座標：", I.posX, I.posY);
+
+            // 在 game_init 結尾加入
+            if(b_creater) clearInterval(b_creater); // 避免重複啟動
+            b_creater = setInterval(b_create, 500); // 每 0.5 秒產生一顆
+
+
+
+        }
+        function game_over() {
+
+        }
+        function I_move() {
+          // 根據按鍵狀態改變座標
+            if (dir["ArrowLeft"] && I.posX > 0) {
+                I.posX -= 5;
+            }
+            if (dir["ArrowRight"] && I.posX + I.w < skyW) {
+                I.posX += 5;
+            }
+            if (dir["ArrowUp"] && I.posY > 0) {
+                I.posY -= 5;
+            }
+            if (dir["ArrowDown"] && I.posY + I.h < skyH) {
+                I.posY += 5;
+            }
+            
+            // 更新 CSS 位置
+            I.style.left = I.posX + "px";
+            I.style.top = I.posY + "px";
+}
+
+        function b_move(b) {
+            if(b.posY + b.h > sky.h) {
+                clearInterval(b.move);
+                b.remove();
+                game_over();
+                return;
+            }
+            b.posY++;
+            b.posX +=getRand(-2,2);
+            if(b.posX < 0) {
+                b.posX=0;
+            }else if(b.posX+b.w > sky.w) {
+                b.posX = sky.w-b.w;
+            }
+            b.style.left=b.posX+"px";
+            b.style.top=b.posY+"px";
+
+        }
+        function b_create() {
+
+        }
+        function mykeydown(e) {
+            if (dir.hasOwnProperty(e.key)) {
+                 dir[e.key] = 1; // 按下時設為 1
+             }
+        }
+        function mykeyup(e) {
+            if (dir.hasOwnProperty(e.key)) {
+                dir[e.key] = 0; // 放開時設為 0
+            }
+
+        }
+        function getRand(min,max) {
+            return Math.floor(Math.random() * (max-min+1)) + min;
+         }
+
     </script>
 </head>
-<body>
-    
+<body onload="game_init()" onkeydown="mykeydown(event)" onkeyup="mykeyup(event)">
+    <div id="sky">
+        <div id="I"></div>
+    </div>
 </body>
 </html>

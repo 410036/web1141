@@ -140,7 +140,7 @@
 
          function ufo_create() {
             var u=document.createElement("img");
-            u.scr="pic/ufo.png";
+            u.src="pic/ufo.png";
             u.className="ufo";
             u.w=60;
             u.h=40;
@@ -155,7 +155,7 @@
 
          function bullet_move(bt) {
             if(bt.posY < 0) {
-                clearInterval(bt.moye);
+                clearInterval(bt.move);
                 bt.remove();
                 return;
             }
