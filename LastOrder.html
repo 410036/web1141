@@ -9,17 +9,17 @@
             position: relative;
         }
         #I {
-            width: 40px;
-            height: 60px;
+            width: 6px;
+            height: 6px;
             background: red;
             position: absolute;
             top: 740px;
             left: 380px;
         }
         .b {
-            width: 5px;
-            height: 5px;
-            background-color: #fff;
+            width: 10px;
+            height: 10px;
+            background-color: #ffffff;
             border-radius: 50%;
             position: absolute;
         }
@@ -28,6 +28,8 @@
     <script>
         var sky, I, dir, game_timer, b_creater;
         var skyW = 800, skyH = 800;
+        var IW = 6, IH = 6;
+
 
         function game_init() {
             dir = {"ArrowLeft":0,"ArrowRight":0, "ArrowDown":0, "ArrowUp":0};
@@ -36,8 +38,8 @@
             I = document.getElementById("I");
             
             // 初始化 I 的屬性
-            I.w = 40;
-            I.h = 60;
+            I.w = 6;
+            I.h = 6;
             I.posX = (skyW - I.w) / 2;
             I.posY = skyH - I.h;
             
@@ -47,19 +49,25 @@
 
             // 啟動移動計時器
             if(I.move) clearInterval(I.move);
-            I.move = setInterval(I_move, 10); // 10ms 執行一次
+            I.move = setInterval(I_move, 15); // 10ms 執行一次
 
             // 其他初始化
             console.log("遊戲初始化完成，當前座標：", I.posX, I.posY);
 
             // 在 game_init 結尾加入
             if(b_creater) clearInterval(b_creater); // 避免重複啟動
-            b_creater = setInterval(b_create, 500); // 每 0.5 秒產生一顆
+            b_creater = setInterval(b_create, 50); // 每 0.05 秒產生一顆
 
 
 
         }
         function game_over() {
+             game_starting=false;
+            clearInterval(I.move);
+            clearInterval(b.move);
+            clearInterval(game_timer);
+            clearInterval(b.create);
+
 
         }
         function I_move() {
@@ -90,7 +98,7 @@
                 return;
             }
             b.posY++;
-            b.posX +=getRand(-2,2);
+            b.posX +=getRand(0,0);
             if(b.posX < 0) {
                 b.posX=0;
             }else if(b.posX+b.w > sky.w) {
@@ -98,11 +106,29 @@
             }
             b.style.left=b.posX+"px";
             b.style.top=b.posY+"px";
+            if(
+            b.posX < I.posX+I.w &&
+            b.posX+b.w > I.posX &&
+            b.posY < I.posY+I.h &&
+            b.posY+b.h > I.posY
+           ){
+             game_over();
+            }
+
 
         }
-        function b_create() {
+        function b_create(){
+            let b=document.createElement("div");
+            b.className="b";
+            b.w=10;b.h=10;
+            b.posX=getRand(0,skyW);
+            b.posY=0;
+            b.style.left=b.posX+"px";
+            b.style.top=b.posY+"px";
+            sky.appendChild(b);
+            b.move=setInterval(()=>b_move(b),5);
+            }
 
-        }
         function mykeydown(e) {
             if (dir.hasOwnProperty(e.key)) {
                  dir[e.key] = 1; // 按下時設為 1
