@@ -11,9 +11,9 @@
         #I {
             width: 6px;
             height: 6px;
-            background: red;
+            background: rgb(255, 230, 0);
             position: absolute;
-            top: 740px;
+            top: 710px;
             left: 380px;
         }
         .b {
@@ -26,9 +26,11 @@
 
     </style>
     <script>
-        var sky, I, dir, game_timer, b_creater;
+        var sky, I, b, dir, game_timer, b_creater;
         var skyW = 800, skyH = 800;
         var IW = 6, IH = 6;
+        var bW = 10, bH = 10;
+
 
 
         function game_init() {
@@ -38,10 +40,10 @@
             I = document.getElementById("I");
             
             // 初始化 I 的屬性
-            I.w = 6;
-            I.h = 6;
-            I.posX = (skyW - I.w) / 2;
-            I.posY = skyH - I.h;
+            IW = 6;
+            IH = 6;
+            I.posX = (skyW - IW) / 2;
+            I.posY = skyH - IH -30;
             
             // 設定初始位置
             I.style.top = I.posY + "px";
@@ -75,13 +77,13 @@
             if (dir["ArrowLeft"] && I.posX > 0) {
                 I.posX -= 5;
             }
-            if (dir["ArrowRight"] && I.posX + I.w < skyW) {
+            if (dir["ArrowRight"] && I.posX + IW < skyW) {
                 I.posX += 5;
             }
             if (dir["ArrowUp"] && I.posY > 0) {
                 I.posY -= 5;
             }
-            if (dir["ArrowDown"] && I.posY + I.h < skyH) {
+            if (dir["ArrowDown"] && I.posY + IH < skyH) {
                 I.posY += 5;
             }
             
@@ -91,7 +93,7 @@
 }
 
         function b_move(b) {
-            if(b.posY + b.h > sky.h) {
+            if(b.posY + bH > skyH) {
                 clearInterval(b.move);
                 b.remove();
                 game_over();
@@ -101,16 +103,17 @@
             b.posX +=getRand(0,0);
             if(b.posX < 0) {
                 b.posX=0;
-            }else if(b.posX+b.w > sky.w) {
-                b.posX = sky.w-b.w;
+            }else if(b.posX+bW > skyW) {
+                b.posX = skyW-bW;
             }
             b.style.left=b.posX+"px";
             b.style.top=b.posY+"px";
+           
             if(
-            b.posX < I.posX+I.w &&
-            b.posX+b.w > I.posX &&
-            b.posY < I.posY+I.h &&
-            b.posY+b.h > I.posY
+            b.posX < I.posX+IW &&
+            b.posX+bW > I.posX &&
+            b.posY < I.posY+IH &&
+            b.posY+bH > I.posY
            ){
              game_over();
             }
