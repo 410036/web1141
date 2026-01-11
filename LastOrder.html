@@ -1,6 +1,6 @@
 <html>
 <head>
-    <title>touhou</title>
+    <title>LastOrder</title>
     <style>
         #sky {
             width: 800px;
@@ -60,7 +60,7 @@
 
             // 在 game_init 結尾加入
             if(b_creater) clearInterval(b_creater); // 避免重複啟動
-            b_creater = setInterval(b_create, 50); // 每 0.05 秒產生一顆
+            b_creater = setInterval(b_create, 35); // 每 0.035 秒產生一顆
 
             setTimeout(win,30000);
             
