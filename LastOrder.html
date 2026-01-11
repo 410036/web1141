@@ -1,6 +1,6 @@
 <html>
 <head>
-    <title></title>
+    <title>touhou</title>
     <style>
         #sky {
             width: 800px;
@@ -30,6 +30,8 @@
         var skyW = 800, skyH = 800;
         var IW = 6, IH = 6;
         var bW = 10, bH = 10;
+        var bs=[];
+        var game_running=true;
 
 
 
@@ -60,15 +62,17 @@
             if(b_creater) clearInterval(b_creater); // 避免重複啟動
             b_creater = setInterval(b_create, 50); // 每 0.05 秒產生一顆
 
-
+            setTimeout(win,30000);
+            
 
         }
         function game_over() {
-             game_starting=false;
+             game_running=false;
             clearInterval(I.move);
             clearInterval(b.move);
             clearInterval(game_timer);
-            clearInterval(b.create);
+            clearInterval(b_creater);         
+            bs.forEach(x=>clearInterval(x.move));
 
 
         }
@@ -93,10 +97,10 @@
 }
 
         function b_move(b) {
+            if(!game_running)return;
             if(b.posY + bH > skyH) {
                 clearInterval(b.move);
-                b.remove();
-                game_over();
+                b.remove();             
                 return;
             }
             b.posY++;
@@ -121,6 +125,7 @@
 
         }
         function b_create(){
+            if(!game_running) return;
             let b=document.createElement("div");
             b.className="b";
             b.w=10;b.h=10;
@@ -130,6 +135,7 @@
             b.style.top=b.posY+"px";
             sky.appendChild(b);
             b.move=setInterval(()=>b_move(b),5);
+            bs.push(b)
             }
 
         function mykeydown(e) {
