@@ -23,6 +23,10 @@
             border-radius: 50%;
             position: absolute;
         }
+        #a {
+            width:800px ;
+            height: 800px; ;
+        }
 
     </style>
     <script>
@@ -32,6 +36,7 @@
         var bW = 10, bH = 10;
         var bs=[];
         var game_running=true;
+        var win_timer;
 
 
 
@@ -60,21 +65,25 @@
 
             // 在 game_init 結尾加入
             if(b_creater) clearInterval(b_creater); // 避免重複啟動
-            b_creater = setInterval(b_create, 35); // 每 0.035 秒產生一顆
-
-            setTimeout(win,30000);
+            b_creater = setInterval(b_create, 30); // 每 0.03 秒產生一顆
+            
+            win_timer=setTimeout(game_win, 40000);
             
 
         }
         function game_over() {
              game_running=false;
-            clearInterval(I.move);
-            clearInterval(b.move);
-            clearInterval(game_timer);
-            clearInterval(b_creater);         
-            bs.forEach(x=>clearInterval(x.move));
-
-
+            clearInterval(I.move);        
+            clearInterval(b_creater);       
+            bs.forEach(x=>clearInterval(x.move));      
+            sky.style.background="linear-gradient(black,gray)";
+            
+        }
+        function game_win() {
+             game_running=false;
+            clearInterval(I.move);       
+            clearInterval(b_creater);
+            sky.style.background="linear-gradient(#5f33ff,#3db1ff,#8fd2ff)";                 
         }
         function I_move() {
           // 根據按鍵狀態改變座標
@@ -159,5 +168,6 @@
     <div id="sky">
         <div id="I"></div>
     </div>
+    <div id="a">天空變藍前別死</div>
 </body>
 </html>
